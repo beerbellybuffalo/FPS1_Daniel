@@ -23,7 +23,7 @@ public class MouseCameraControls : MonoBehaviour
     
     public Camera playerCamera; //for vertical we are adjusting the camera angle with player fixed, and vice versa for horizontal
     private float camVertAngle = 0;
-    public float sens=100; //increase for higher sensitivity
+    public float sens;
     void UpdateCameraRotation()
     {
         //Horizontal Rotation
