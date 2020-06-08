@@ -6,7 +6,9 @@ using Vector3 = UnityEngine.Vector3;
 
 public class Movement : MonoBehaviour
 {
-    public float moveSpeed; // means the player can adjust
+    public float moveSpeed; //in Unity UI this will appear as a variable "Move Speed"
+    private float Speed;
+    public float jumpPower;
     private float yVelocity;
 
     float MoveInputX()
@@ -17,27 +19,41 @@ public class Movement : MonoBehaviour
     {
         return Input.GetAxis("Vertical");
     }
-    // Start is called before the first frame update
+    float MoveInputZ()
+    {
+        jumpPower = Mathf.Clamp(jumpPower, -10f, 10f);
+        return jumpPower*Input.GetAxis("Jump");
+    }
     Vector3 UpdatePlayerMovement()
     {
-        Vector3 motion = transform.right * MoveInputX() + transform.forward * MoveInputY();
-        if (motion.magnitude > 1) motion.Normalize();
-        return motion * moveSpeed;
+        Vector3 motion = transform.right * MoveInputX() + transform.forward * MoveInputY() + transform.up * MoveInputZ();
+        if (motion.magnitude > 1) motion.Normalize();   // this makes sure digaonal movement is the same speed as forward or sideways
+        if (Input.GetKey(KeyCode.LeftShift))    //Hold Left Shift key to run
+        {
+            Speed = 2*moveSpeed;    // run = 2x walking speed
+        }
+        else
+        {
+            Speed = moveSpeed;
+        }
+        return motion*Speed;
     }
+    public Transform capsuleP1;
+    public Transform capsuleP2;
+    public LayerMask groundLayer; // referencing the ground layer
     Vector3 UpdatePlayerGravity()
     {
-        if (Physics.Raycast(groundCheck.position, Vector3.down, 1.1f, groundLayer)) //1.1 instead of 1 because default skin width of Character Controller is 0.08
+        if (Physics.CapsuleCast(capsuleP1.position, capsuleP2.position, 0.51f, Vector3.down, 0f, groundLayer)) //note default skin width of Character Controller is 0.08
         {
-            yVelocity = -0.01f; //why though
+            yVelocity = -0.01f;
         }
-        else {
+        else 
+        {
             yVelocity += -9.81f * Time.deltaTime;
         }
         return new Vector3(0, yVelocity, 0);
     }
     public CharacterController controller;//reference CharacterController
-    public Transform groundCheck;
-    public LayerMask groundLayer; // referencing the ground layer
     void Start()
     {
         
