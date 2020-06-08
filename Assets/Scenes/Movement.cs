@@ -43,7 +43,7 @@ public class Movement : MonoBehaviour
     public LayerMask groundLayer; // referencing the ground layer
     Vector3 UpdatePlayerGravity()
     {
-        if (Physics.CapsuleCast(capsuleP1.position, capsuleP2.position, 0.51f, Vector3.down, 0f, groundLayer)) //note default skin width of Character Controller is 0.08
+        if (Physics.CapsuleCast(capsuleP1.position, capsuleP2.position, controller.radius, Vector3.down, 0.1f, groundLayer)) //note default skin width of Character Controller is 0.08
         {
             yVelocity = -0.01f;
         }
